@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GalleryDemo</string>
+    <string name="button_text">按钮</string>
+    <string name="detail">支持功能：\n 1、上下左右控制焦点\n 2、Gallery画廊模式层叠效果\n 3、图片循环滚动\n
+        4、图片自动滚动（聚焦时手动控制，失焦时自动滚动）
+    </string>
+</resources>

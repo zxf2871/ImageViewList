@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.study.b8a3.widget.BorderImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recommend_img"
+    android:src="@drawable/index_big_default" />
