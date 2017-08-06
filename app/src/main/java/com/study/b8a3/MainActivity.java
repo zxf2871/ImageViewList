@@ -58,17 +58,17 @@ public class MainActivity extends Activity {
         e.setBackgroundResource(R.drawable.e);
         mDataImage.add(e);
 
-        MyImageView f = new MyImageView(this);
-        f.setBackgroundResource(R.drawable.f);
-        mDataImage.add(f);
-
-        MyImageView g = new MyImageView(this);
-        g.setBackgroundResource(R.drawable.g);
-        mDataImage.add(g);
-
-        MyImageView h = new MyImageView(this);
-        h.setBackgroundResource(R.drawable.h);
-        mDataImage.add(h);
+//        MyImageView f = new MyImageView(this);
+//        f.setBackgroundResource(R.drawable.f);
+//        mDataImage.add(f);
+//
+//        MyImageView g = new MyImageView(this);
+//        g.setBackgroundResource(R.drawable.g);
+//        mDataImage.add(g);
+//
+//        MyImageView h = new MyImageView(this);
+//        h.setBackgroundResource(R.drawable.h);
+//        mDataImage.add(h);
 
 //        MyImageView i = new MyImageView(this);
 //        i.setBackgroundResource(R.drawable.i);
