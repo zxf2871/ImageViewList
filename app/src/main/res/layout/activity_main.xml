@@ -8,14 +8,14 @@
     tools:context="com.study.b8a3.MainActivity"
     android:background="@android:color/white">
 
-    <android.support.v4.view.ViewPager
-        android:clipChildren="false"
+    <com.study.b8a3.MyViewPager
+        android:clipChildren="true"
         android:id="@+id/vp_demo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp">
 
-    </android.support.v4.view.ViewPager>
+    </com.study.b8a3.MyViewPager>
 
 </LinearLayout>

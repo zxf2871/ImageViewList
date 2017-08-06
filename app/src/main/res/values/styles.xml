@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 画廊版首页相关样式 start -->
     <!-- 首页大框架显示分辨率1280 * 720 -->
@@ -55,4 +54,5 @@
         <item name="android:layout_marginTop">30dp</item>
         <item name="android:textSize">20sp</item>
     </style>
+
 </resources>

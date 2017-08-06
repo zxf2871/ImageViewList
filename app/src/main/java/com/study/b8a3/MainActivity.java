@@ -1,21 +1,15 @@
 package com.study.b8a3;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
 
-    private ViewPager mViewPager;
+    private MyViewPager mViewPager;
     private List<MyImageView> mDataImage = new ArrayList<>();
 
 
@@ -23,11 +17,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mViewPager = (ViewPager) findViewById(R.id.vp_demo);
-        mViewPager.setPageTransformer(true, new DepthPageTransformer());
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager = (MyViewPager) findViewById(R.id.vp_demo);
+        mViewPager.setPageTransformer(true, new DepthPageTransformer(mViewPager));
+        mViewPager.setOffscreenPageLimit(5);
 
-        mViewPager.setPageMargin(100);
+//        mViewPager.setPageMargin(300);
         initData();
     }
 
@@ -43,34 +37,9 @@ public class MainActivity extends Activity {
             mDataImage.add(img);
         }
 
-        mViewPager.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return mDataImage.size();
-            }
+        MyAdapter adapter = new MyAdapter(mDataImage);
 
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == object;
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-
-                container.addView(mDataImage.get(position));
-                return mDataImage.get(position);
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView(mDataImage.get(position));
-            }
-
-            @Override
-            public float getPageWidth(int position) {
-                return 0.8f;
-            }
-        });
+        mViewPager.setAdapter(adapter);
     }
 
 }
