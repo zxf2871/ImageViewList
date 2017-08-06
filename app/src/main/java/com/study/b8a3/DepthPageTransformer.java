@@ -17,13 +17,9 @@ public class DepthPageTransformer implements ViewPager.PageTransformer {
     private static final float MIN_SCALE = 0.95f;
 
     private final MyViewPager mVp;
-    private int mCurrentIndex = -1;
-    private boolean isUp = false;
-    private int upType = 0;//等于0
 
-
-    public DepthPageTransformer(MyViewPager viewPager){
-        mVp =  viewPager;
+    public DepthPageTransformer(MyViewPager viewPager) {
+        mVp = viewPager;
     }
 
     public void transformPage(View view, float position) {
@@ -56,58 +52,17 @@ public class DepthPageTransformer implements ViewPager.PageTransformer {
         }
 
         int currentIndex = mVp.getCurrentItem();
-
-        if(position == 0){
-            mCurrentIndex = currentIndex;
-        }
-
-        if (Math.abs(position) < 0.5 && ((MyAdapter)mVp.getAdapter()).getIndex((MyImageView) view) == currentIndex) {
-
-
-//
-//            if(mCurrentIndex != currentIndex){
-//                if(isUp){
-//                    mCurrentIndex = currentIndex;
-//                }
-//            }
-            boolean needchage = false;
-
-
-            if(position>0){
-                if(upType == -1){
-                    needchage = true;
-                }
-                upType = 1;
-            }else {
-                if(upType == 1){
-                    needchage = true;
-                }
-                upType = -1;
-            }
-
-
-
-
-//            if(needchage) {
-                view.setAlpha(1 - Math.abs(position));
-//                isUp = false;
-//            }
-            Log.e("------->", String.valueOf(((TextView) view).getText())
-                    + " currentIndex  " + currentIndex
-                    + " position  " + position
-                    + " mVp  " + mVp.getCurrentItem()
-                    + " getIndex  " + ((MyAdapter)mVp.getAdapter()).getIndex((MyImageView) view)
-                    + " pageWidth  " + pageWidth);
-
-
-        }else {
+        if (Math.abs(position) < 1 && ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view) == currentIndex) {
+            view.setAlpha(1 - Math.abs(position));
+        } else {
             view.setAlpha(1);
         }
-
-        if(position>=0 && position<0.5){
-            ;
-        }
-
+        Log.e("------->", String.valueOf(((TextView) view).getText())
+                + " currentIndex  " + currentIndex
+                + " position  " + position
+                + " mVp  " + mVp.getCurrentItem()
+                + " getIndex  " + ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view)
+                + " pageWidth  " + pageWidth);
 
 
     }

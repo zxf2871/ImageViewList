@@ -4,18 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context="com.study.b8a3.MainActivity"
-    android:background="@android:color/white">
-
-    <com.study.b8a3.MyViewPager
-        android:clipChildren="true"
-        android:id="@+id/vp_demo"
+    android:background="@android:color/black"
+    >
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp">
+        android:layout_height="match_parent">
+        <com.study.b8a3.FreshText
+            android:id="@+id/fresh_text"
+            android:layout_width="20sp"
+            android:layout_height="wrap_content"
+            android:ems="1"
+            android:textColor="#ffff00"
+            android:visibility="invisible"
+            android:text="松开刷新。。。"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
+        <com.study.b8a3.MyViewPager
+            android:clipChildren="true"
+            android:id="@+id/vp_demo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp">
 
-    </com.study.b8a3.MyViewPager>
+        </com.study.b8a3.MyViewPager>
+    </RelativeLayout>
+
 
 </LinearLayout>
