@@ -13,7 +13,6 @@ import android.widget.TextView;
 public class MyViewPager extends ViewPager {
     public MyViewPager(Context context) {
         super(context);
-
     }
 
     public MyViewPager(Context context, AttributeSet attrs) {

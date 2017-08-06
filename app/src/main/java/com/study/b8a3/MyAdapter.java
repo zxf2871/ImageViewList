@@ -43,4 +43,11 @@ public class MyAdapter extends PagerAdapter {
     public float getPageWidth(int position) {
         return 0.8f;
     }
+
+    public int getIndex(MyImageView view){
+        if(mDataImage == null || mDataImage.size()==0){
+            return -1;
+        }
+        return mDataImage.indexOf(view);
+    }
 }

@@ -16,21 +16,24 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 public class DepthPageTransformer implements ViewPager.PageTransformer {
     private static final float MIN_SCALE = 0.95f;
 
-    private final ViewPager mVp;
+    private final MyViewPager mVp;
+    private int mCurrentIndex = -1;
+    private boolean isUp = false;
+    private int upType = 0;//等于0
 
 
-    public DepthPageTransformer(ViewPager viewPager){
+    public DepthPageTransformer(MyViewPager viewPager){
         mVp =  viewPager;
     }
 
     public void transformPage(View view, float position) {
-
+        long now = System.currentTimeMillis();
 
         int pageWidth = view.getWidth();
         float scaleFactor = Math.max(MIN_SCALE + (1 - MIN_SCALE) * (1 - Math.abs(position)), 0);
 
         if (position > -1f) {
-//            view.setTranslationX(pageWidth * -(1 / (position + 1) + 1) + 100);
+//            view.setTranslationX(pageWidth * -(a / (position + a) + a) + 100);
         }
         view.setScaleX(scaleFactor);
         view.setScaleY(scaleFactor);
@@ -53,23 +56,58 @@ public class DepthPageTransformer implements ViewPager.PageTransformer {
         }
 
         int currentIndex = mVp.getCurrentItem();
-//        if (Math.abs(position) < 0.5) {
-//            view.setAlpha(1 - Math.abs(position));
-//        }else {
-//            view.setAlpha(1);
-//        }
 
-
-        if(position>=0 && position<0.5){
-
+        if(position == 0){
+            mCurrentIndex = currentIndex;
         }
 
+        if (Math.abs(position) < 0.5 && ((MyAdapter)mVp.getAdapter()).getIndex((MyImageView) view) == currentIndex) {
 
-        Log.e("------->", String.valueOf(((TextView) view).getText())
-                + " scaleFactor  " + scaleFactor
-                + " position  " + position
-                + " mVp  " + mVp.getCurrentItem()
-                + " pageWidth  " + pageWidth);
+
+//
+//            if(mCurrentIndex != currentIndex){
+//                if(isUp){
+//                    mCurrentIndex = currentIndex;
+//                }
+//            }
+            boolean needchage = false;
+
+
+            if(position>0){
+                if(upType == -1){
+                    needchage = true;
+                }
+                upType = 1;
+            }else {
+                if(upType == 1){
+                    needchage = true;
+                }
+                upType = -1;
+            }
+
+
+
+
+//            if(needchage) {
+                view.setAlpha(1 - Math.abs(position));
+//                isUp = false;
+//            }
+            Log.e("------->", String.valueOf(((TextView) view).getText())
+                    + " currentIndex  " + currentIndex
+                    + " position  " + position
+                    + " mVp  " + mVp.getCurrentItem()
+                    + " getIndex  " + ((MyAdapter)mVp.getAdapter()).getIndex((MyImageView) view)
+                    + " pageWidth  " + pageWidth);
+
+
+        }else {
+            view.setAlpha(1);
+        }
+
+        if(position>=0 && position<0.5){
+            ;
+        }
+
 
 
     }
