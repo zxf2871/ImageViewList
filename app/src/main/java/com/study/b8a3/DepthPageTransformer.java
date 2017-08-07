@@ -52,17 +52,17 @@ public class DepthPageTransformer implements ViewPager.PageTransformer {
         }
 
         int currentIndex = mVp.getCurrentItem();
-        if (Math.abs(position) < 1 && ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view) == currentIndex) {
+        if (Math.abs(position) < 0.5 && ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view) == currentIndex) {
             view.setAlpha(1 - Math.abs(position));
         } else {
             view.setAlpha(1);
         }
-        Log.e("------->", String.valueOf(((TextView) view).getText())
-                + " currentIndex  " + currentIndex
-                + " position  " + position
-                + " mVp  " + mVp.getCurrentItem()
-                + " getIndex  " + ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view)
-                + " pageWidth  " + pageWidth);
+//        Log.e("------->", String.valueOf(((TextView) view).getText())
+//                + " currentIndex  " + currentIndex
+//                + " position  " + position
+//                + " mVp  " + mVp.getCurrentItem()
+//                + " getIndex  " + ((MyAdapter) mVp.getAdapter()).getIndex((MyImageView) view)
+//                + " pageWidth  " + pageWidth);
 
 
     }

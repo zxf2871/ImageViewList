@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context="com.study.b8a3.MainActivity"
-    android:background="@android:color/black"
+    android:background="#e3867f7f"
     >
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,14 +16,15 @@
             android:layout_width="20sp"
             android:layout_height="wrap_content"
             android:ems="1"
-            android:textColor="#ffff00"
+            android:textColor="#ffffff"
             android:visibility="invisible"
             android:text="松开刷新。。。"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="11dp"
-            android:layout_marginStart="11dp" />
+            android:layout_marginStart="11dp"
+            android:background="@android:color/transparent"/>
         <com.study.b8a3.MyViewPager
             android:clipChildren="true"
             android:id="@+id/vp_demo"

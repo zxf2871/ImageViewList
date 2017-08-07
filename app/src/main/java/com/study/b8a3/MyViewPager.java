@@ -2,6 +2,8 @@ package com.study.b8a3;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,6 +27,8 @@ public class MyViewPager extends ViewPager {
     float x = 0;//记录开始触摸的位置
     int xMove = 0;//移动的距离
     private int SCALE = 9;
+    private boolean show = false;
+
 
     public void setFreshView(FreshText mFreshView) {
         this.mFreshView = mFreshView;
@@ -53,18 +57,40 @@ public class MyViewPager extends ViewPager {
                     x = ev.getX();//记录位置
                 }
                 xMove = (int) (x - ev.getX()) / 2;//计算移动距离
-                Log.e(TAG, "xMove:" + xMove + "isMoveLeft:" + isMoveLeft + "isMoveRight:" + isMoveRight);
+//                Log.e(TAG, "xMove:" + xMove + "isMoveLeft:" + isMoveLeft + "isMoveRight:" + isMoveRight);
                 if (isMoveLeft && xMove <= 0 || isMoveRight && xMove >= 0) {//移动位置
 
                     if(mFreshView!=null&&xMove < -DeviceUtils.getWindowWidth(getContext()) / SCALE){
                         mFreshView.setVisibility(VISIBLE);
 //                        mFreshView.setFreshText();
+                        show = true;
+                    }else {
+                        mFreshView.setVisibility(INVISIBLE);
+//                        mFreshView.setFreshText();
+                        show = false;
                     }
                     this.layout(-xMove, normal.top, normal.right - xMove, normal.bottom);
                     return true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
+
+                if (show) {
+                    mFreshView.setFreshing();
+                    show = false;
+                }
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isMoveLeft || isMoveRight) {
+                            animation(xMove);//还原位置
+                        }
+                    }
+                });
+
+                break;
+
+
             case MotionEvent.ACTION_POINTER_UP://多点触摸
             case MotionEvent.ACTION_POINTER_INDEX_SHIFT:
                 if (isMoveLeft || isMoveRight) {
@@ -77,7 +103,7 @@ public class MyViewPager extends ViewPager {
 
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {//监听viewpager是否是第一页或最后一页
-        Log.e("---------","position:"+position+"offset:"+offset+"offsetPixels:"+offsetPixels);
+//        Log.e("---------", "position:" + position + "offset:" + offset + "offsetPixels:" + offsetPixels);
 
         if (getAdapter() == null && getAdapter().getCount() == 0) {
             isMoveLeft = false;
@@ -102,15 +128,60 @@ public class MyViewPager extends ViewPager {
     public void animation(int moveX) {
         if (listener != null) {
             if (moveX > DeviceUtils.getWindowWidth(getContext()) / SCALE) {//滑动的距离超过屏幕的1/SCALE才回调
-                listener.onLoadMore();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onLoadMore();
+                        Message message = Message.obtain();
+                        message.what = MESSAGE_TYPE_FINSH_RIGHT_PULL;
+                        mHandler.sendMessage(Message.obtain());
+                    }
+                }).start();
+
             } else if (moveX < -DeviceUtils.getWindowWidth(getContext()) / SCALE) {
                 mFreshView.setFreshing();
-                listener.onRefresh();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onRefresh();
+                        Message message = Message.obtain();
+                        message.what = MESSAGE_TYPE_FINSH_LEFT_PULL;
+                        mHandler.sendMessage(Message.obtain());
+                    }
+                }).start();
+            }else {
+                finishFresh();
             }
+        }else {
+            finishFresh();
         }
 
+
+    }
+
+    public static final int MESSAGE_TYPE_FINSH_RIGHT_PULL= 1;
+    public static final int MESSAGE_TYPE_FINSH_LEFT_PULL= 0;
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MESSAGE_TYPE_FINSH_LEFT_PULL:
+                    finishFresh();
+                    break;
+
+                    case MESSAGE_TYPE_FINSH_RIGHT_PULL:
+//                    finishFresh();
+                    break;
+            }
+        }
+    };
+
+    private void finishFresh(){
         mFreshView.setVisibility(INVISIBLE);
         mFreshView.setFreshText();
+        mFreshView.cancelAnim();
         x = 0;
         xMove = 0;
         TranslateAnimation ta = new TranslateAnimation(this.getX(), normal.left, 0, 0);
@@ -118,6 +189,7 @@ public class MyViewPager extends ViewPager {
         this.startAnimation(ta);
         this.layout(normal.left, normal.top, normal.right, normal.bottom);
     }
+
 
     public void setOnRefreshListener(OnRefreshListener listener) {
         this.listener = listener;
