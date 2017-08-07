@@ -67,7 +67,7 @@ public class FreshText extends TextView {
         mYPositions = new float[getWidth()];
         mCycleFactorW = (float) ( 4*Math.PI / mTotalWidth);
         mAgePaint = new Paint();
-        mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OVER);
+        mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 
         // 根据view总宽度得出所有对应的y值
         for (int i = 0; i < mYPositions.length; i++) {
