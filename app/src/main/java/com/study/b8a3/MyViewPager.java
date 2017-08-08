@@ -7,9 +7,12 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.lang.ref.SoftReference;
@@ -28,13 +31,19 @@ public class MyViewPager extends ViewPager {
     int xMove = 0;//移动的距离
     private int SCALE = 9;
     private boolean show = false;
+    private boolean showR = false;
 
 
     public void setFreshView(FreshText mFreshView) {
         this.mFreshView = mFreshView;
     }
 
+    public void setAddView(TextView view) {
+        this.mAddView = view;
+    }
+
     private FreshText mFreshView;
+    private TextView mAddView;
 
     public MyViewPager(Context context) {
         super(context);
@@ -60,13 +69,20 @@ public class MyViewPager extends ViewPager {
 //                Log.e(TAG, "xMove:" + xMove + "isMoveLeft:" + isMoveLeft + "isMoveRight:" + isMoveRight);
                 if (isMoveLeft && xMove <= 0 || isMoveRight && xMove >= 0) {//移动位置
 
-                    if(mFreshView!=null&&xMove < -DeviceUtils.getWindowWidth(getContext()) / SCALE){
+                    if (mFreshView != null && xMove < -DeviceUtils.getWindowWidth(getContext()) / SCALE) {
                         mFreshView.setVisibility(VISIBLE);
 //                        mFreshView.setFreshText();
                         show = true;
-                    }else {
+                    } else if (mAddView != null && xMove > DeviceUtils.getWindowWidth(getContext()) / SCALE) {
+//                        mAddView.setVisibility(VISIBLE);
+                        showR = true;
+                    } else {
                         mFreshView.setVisibility(INVISIBLE);
+                        mAddView.setVisibility(INVISIBLE);
+                        mAddView.setText("加载中。。。");
+
 //                        mFreshView.setFreshText();
+                        showR = false;
                         show = false;
                     }
                     this.layout(-xMove, normal.top, normal.right - xMove, normal.bottom);
@@ -78,6 +94,12 @@ public class MyViewPager extends ViewPager {
                 if (show) {
                     mFreshView.setFreshing();
                     show = false;
+                }
+                if (showR) {
+//                    mAddView.setText("加载更多。");
+                    mAddView.setVisibility(VISIBLE);
+
+                    showR = false;
                 }
                 post(new Runnable() {
                     @Override
@@ -110,7 +132,7 @@ public class MyViewPager extends ViewPager {
             isMoveRight = false;
         } else if (position == 0 && offsetPixels == 0) {
             isMoveLeft = true;
-        } else if (position == getAdapter().getCount() - 2 && offset == 0 && offsetPixels == 0) {
+        } else if (position == getAdapter().getCount() - 2) {
             isMoveRight = true;
         } else {
             isMoveLeft = false;
@@ -128,13 +150,14 @@ public class MyViewPager extends ViewPager {
     public void animation(int moveX) {
         if (listener != null) {
             if (moveX > DeviceUtils.getWindowWidth(getContext()) / SCALE) {//滑动的距离超过屏幕的1/SCALE才回调
+                mAddView.setText("加载中。。。");
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         listener.onLoadMore();
                         Message message = Message.obtain();
                         message.what = MESSAGE_TYPE_FINSH_RIGHT_PULL;
-                        mHandler.sendMessage(Message.obtain());
+                        mHandler.sendMessage(message);
                     }
                 }).start();
 
@@ -146,39 +169,45 @@ public class MyViewPager extends ViewPager {
                         listener.onRefresh();
                         Message message = Message.obtain();
                         message.what = MESSAGE_TYPE_FINSH_LEFT_PULL;
-                        mHandler.sendMessage(Message.obtain());
+                        mHandler.sendMessage(message);
                     }
                 }).start();
-            }else {
-                finishFresh();
+            } else {
+                if (isMoveRight)
+                    finishFreshR();
+                if (isMoveLeft)
+                    finishFresh();
             }
-        }else {
-            finishFresh();
+        } else {
+            if (isMoveRight)
+                finishFreshR();
+            if (isMoveLeft)
+                finishFresh();
         }
 
 
     }
 
-    public static final int MESSAGE_TYPE_FINSH_RIGHT_PULL= 1;
-    public static final int MESSAGE_TYPE_FINSH_LEFT_PULL= 0;
+    public static final int MESSAGE_TYPE_FINSH_RIGHT_PULL = 1;
+    public static final int MESSAGE_TYPE_FINSH_LEFT_PULL = 0;
 
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MESSAGE_TYPE_FINSH_LEFT_PULL:
                     finishFresh();
                     break;
 
-                    case MESSAGE_TYPE_FINSH_RIGHT_PULL:
-//                    finishFresh();
+                case MESSAGE_TYPE_FINSH_RIGHT_PULL:
+                    finishFreshR();
                     break;
             }
         }
     };
 
-    private void finishFresh(){
+    private void finishFresh() {
         mFreshView.setVisibility(INVISIBLE);
         mFreshView.setFreshText();
         mFreshView.cancelAnim();
@@ -190,6 +219,42 @@ public class MyViewPager extends ViewPager {
         this.layout(normal.left, normal.top, normal.right, normal.bottom);
     }
 
+    private void finishFreshR() {
+        if (isClicked) {
+            mAddView.setText("没有了");
+            mAddView.setOnClickListener(null);
+            isClicked = false;
+        } else {
+            mAddView.setText("加载失败。 点击重试");
+            mAddView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isClicked = true;
+                    if (listener != null) {
+                        mAddView.setText("加载中。。。");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onLoadMore();
+                                Message message = Message.obtain();
+                                message.what = MESSAGE_TYPE_FINSH_RIGHT_PULL;
+                                mHandler.sendMessage(message);
+                            }
+                        }).start();
+                    }
+                }
+            });
+        }
+
+        x = 0;
+        xMove = 0;
+        TranslateAnimation ta = new TranslateAnimation(this.getX(), normal.left, 0, 0);
+        ta.setDuration(500);
+        this.startAnimation(ta);
+        this.layout(normal.left, normal.top, normal.right, normal.bottom);
+    }
+
+    boolean isClicked = false;
 
     public void setOnRefreshListener(OnRefreshListener listener) {
         this.listener = listener;

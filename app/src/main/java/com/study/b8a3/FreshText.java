@@ -4,11 +4,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -67,7 +69,7 @@ public class FreshText extends TextView {
         mYPositions = new float[getWidth()];
         mCycleFactorW = (float) ( 4*Math.PI / mTotalWidth);
         mAgePaint = new Paint();
-        mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+        mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.MULTIPLY);
 
         // 根据view总宽度得出所有对应的y值
         for (int i = 0; i < mYPositions.length; i++) {
@@ -177,5 +179,13 @@ public class FreshText extends TextView {
         }
 
 
+    }
+
+    private float getOffsetX(float iconWidth, float textHalfWidth, float spacing, boolean isText) {
+        float totalWidth = iconWidth + MeasureUtil.dip2px(getContext(), spacing) + textHalfWidth * 2;
+        // 文字偏移量
+        if (isText) return totalWidth / 2 - iconWidth - spacing;
+        // 图标偏移量
+        return totalWidth / 2 - iconWidth;
     }
 }

@@ -3,6 +3,7 @@ package com.study.b8a3;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +13,17 @@ public class MainActivity extends Activity {
     private MyViewPager mViewPager;
     private List<MyImageView> mDataImage = new ArrayList<>();
     private FreshText mFreshText;
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFreshText = (FreshText) findViewById(R.id.fresh_text);
+        mTextView = (TextView) findViewById(R.id.add_view);
         mViewPager = (MyViewPager) findViewById(R.id.vp_demo);
         mViewPager.setFreshView(mFreshText);
+        mViewPager.setAddView(mTextView);
         mViewPager.setOnRefreshListener(new MyViewPager.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -101,7 +105,7 @@ public class MainActivity extends Activity {
 
 
 
-        MyAdapter adapter = new MyAdapter(mDataImage);
+        MyAdapter adapter = new MyAdapter(mDataImage, getBaseContext().getApplicationContext());
 
         mViewPager.setAdapter(adapter);
     }

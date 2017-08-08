@@ -1,8 +1,12 @@
 package com.study.b8a3;
 
+import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -12,9 +16,11 @@ import java.util.List;
 
 public class MyAdapter extends PagerAdapter {
     List<MyImageView> mDataImage;
+    private Context mContext;
 
-    public MyAdapter(List<MyImageView> data){
+    public MyAdapter(List<MyImageView> data, Context context){
         mDataImage = data;
+        this.mContext = context;
     }
 
     @Override
